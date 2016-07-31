@@ -40,7 +40,11 @@ public class CategoryStallAdapter extends RecyclerView.Adapter<CategoryStallAdap
     public void onBindViewHolder(CategoryHolder holder, final int position) {
         Category categoryProduct = mCategoryProducts.get(position);
         holder.textView.setText(categoryProduct.getName());
-        holder.imageView.setImageResource(R.drawable.logo_big_c);
+        if (categoryProduct.getName().equals("aut")) {
+            holder.imageView.setImageResource(R.drawable.ic_laptop);
+        } else {
+            holder.imageView.setImageResource(R.drawable.ic_smartphone);
+        }
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +63,14 @@ public class CategoryStallAdapter extends RecyclerView.Adapter<CategoryStallAdap
     public void removeItem(int position) {
         mCategoryProducts.remove(position);
         notifyItemRemoved(position);
+    }
+
+    public void swapList(List<Category> mCategoryProducts) {
+        if (mCategoryProducts != null) {
+            this.mCategoryProducts.clear();
+            this.mCategoryProducts.addAll(mCategoryProducts);
+            notifyDataSetChanged();
+        }
     }
 
     public void addItem(int position, Category model) {

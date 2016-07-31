@@ -20,16 +20,17 @@ import com.example.framgia.imarketandroid.databases.DatabaseTable;
 import com.example.framgia.imarketandroid.models.ItemProduct;
 import com.example.framgia.imarketandroid.ui.adapter.ListProductsAdapter;
 import com.example.framgia.imarketandroid.util.Flog;
+import com.example.framgia.imarketandroid.util.OnRecyclerItemInteractListener;
 
 import java.util.ArrayList;
 
 /**
  * Created by hoavt on 19/07/2016.
  */
-public class ListProductsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class ListProductsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, OnRecyclerItemInteractListener {
     public static final int NUMBER_OF_COLS = 2;
     RecyclerView mRvListProducts;
-    private RecyclerView.Adapter mAdapter;
+    private ListProductsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<ItemProduct> mItemProducts = new ArrayList<>();
     private DatabaseTable mDataBase;
@@ -127,11 +128,12 @@ public class ListProductsActivity extends AppCompatActivity implements SearchVie
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRvListProducts.setHasFixedSize(true);
-        mToolbar= (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         // use a gridview layout manager
         mLayoutManager = new GridLayoutManager(this, NUMBER_OF_COLS);
         mRvListProducts.setLayoutManager(mLayoutManager);
         mAdapter = new ListProductsAdapter(this, mItemProducts);
+        mAdapter.setOnRecyclerItemInteractListener(this);
         mRvListProducts.setAdapter(mAdapter);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -198,5 +200,10 @@ public class ListProductsActivity extends AppCompatActivity implements SearchVie
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        startActivity(new Intent(this, DetailsProductActivity.class));
     }
 }

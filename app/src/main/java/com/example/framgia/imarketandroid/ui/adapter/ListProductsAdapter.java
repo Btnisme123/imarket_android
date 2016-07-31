@@ -1,6 +1,7 @@
 package com.example.framgia.imarketandroid.ui.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.framgia.imarketandroid.R;
 import com.example.framgia.imarketandroid.models.ItemProduct;
+import com.example.framgia.imarketandroid.util.OnRecyclerItemInteractListener;
 
 import java.util.ArrayList;
 
@@ -21,6 +23,11 @@ public class ListProductsAdapter extends RecyclerView.Adapter<ListProductsAdapte
     public static final String NO_PROMOTION = "0%";
     private ArrayList<ItemProduct> mItems = new ArrayList<>();
     private Context mContext;
+    private OnRecyclerItemInteractListener mListener;
+
+    public void setOnRecyclerItemInteractListener(OnRecyclerItemInteractListener mOnRecyclerItemInteractListener) {
+        this.mListener = mOnRecyclerItemInteractListener;
+    }
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public ListProductsAdapter(Context context, ArrayList<ItemProduct> myItems) {
@@ -44,20 +51,28 @@ public class ListProductsAdapter extends RecyclerView.Adapter<ListProductsAdapte
     }
 
     @Override
-    public void onBindViewHolder(ListProductsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ListProductsAdapter.ViewHolder holder, final int position) {
         ItemProduct itemProduct = mItems.get(position);
-        ImageView ivPresentIcon = holder.mIvPresentIcon;
+        ImageView ivPresentIcon = holder.imagePresentIcon;
         ivPresentIcon.setImageResource(itemProduct.getPresentIcon());
-        TextView nameProduct = holder.mTvNameProduct;
+        TextView nameProduct = holder.textNameProduct;
         nameProduct.setText(itemProduct.getNameProduct());
-        FrameLayout promotionView = holder.mPromotionView;
-        TextView percentSale = holder.mPercentSale;
+        FrameLayout promotionView = holder.promotionView;
+        TextView percentSale = holder.percentSale;
         percentSale.setText(itemProduct.getPromotionPercent());
         if (itemProduct.getPromotionPercent().equals(NO_PROMOTION)) {
             promotionView.setVisibility(View.GONE);
         } else {
             promotionView.setVisibility(View.VISIBLE);
         }
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onItemClick(position);
+                }
+            }
+        });
     }
 
     @Override
@@ -66,10 +81,11 @@ public class ListProductsAdapter extends RecyclerView.Adapter<ListProductsAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mIvPresentIcon;
-        public TextView mTvNameProduct;
-        public FrameLayout mPromotionView;
-        public TextView mPercentSale;
+        public CardView cardView;
+        public ImageView imagePresentIcon;
+        public TextView textNameProduct;
+        public FrameLayout promotionView;
+        public TextView percentSale;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -77,10 +93,11 @@ public class ListProductsAdapter extends RecyclerView.Adapter<ListProductsAdapte
         }
 
         private void initViews(View parentView) {
-            mIvPresentIcon = (ImageView) parentView.findViewById(R.id.iv_present_icon);
-            mTvNameProduct = (TextView) parentView.findViewById(R.id.tv_name_product);
-            mPromotionView = (FrameLayout) parentView.findViewById(R.id.fl_promotion_view);
-            mPercentSale = (TextView) parentView.findViewById(R.id.tv_percent_sale);
+            imagePresentIcon = (ImageView) parentView.findViewById(R.id.iv_present_icon);
+            textNameProduct = (TextView) parentView.findViewById(R.id.tv_name_product);
+            promotionView = (FrameLayout) parentView.findViewById(R.id.fl_promotion_view);
+            percentSale = (TextView) parentView.findViewById(R.id.tv_percent_sale);
+            cardView = (CardView) parentView.findViewById(R.id.cardview_product);
         }
     }
 }

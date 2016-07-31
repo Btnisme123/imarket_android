@@ -58,6 +58,11 @@ public class CategoryStallActivity extends AppCompatActivity implements SearchVi
 
     public void init() {
         mCategoryProducts = new ArrayList<>();
+        mCategoryStallAdapter = new CategoryStallAdapter(mCategoryProducts);
+        mRecyclerView.setAdapter(mCategoryStallAdapter);
+        mCategoryStallAdapter.setOnRecyclerItemInteractListener(this);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, Constants.NUMBER_OF_COLUMN));
+        mRecyclerView.addItemDecoration(new GridItemDecoration(this));
         HttpRequest.getInstance().init();
         HttpRequest.getInstance().setOnLoadDataListener(this);
         HttpRequest.getInstance().loadCategories();
@@ -94,12 +99,8 @@ public class CategoryStallActivity extends AppCompatActivity implements SearchVi
     public void onLoadDataSuccess(Object object) {
         if (object != null) {
             mCategoryProducts = (List<Category>) object;
+            mCategoryStallAdapter.swapList(mCategoryProducts);
         }
-        mCategoryStallAdapter = new CategoryStallAdapter(mCategoryProducts);
-        mRecyclerView.setAdapter(mCategoryStallAdapter);
-        mCategoryStallAdapter.setOnRecyclerItemInteractListener(this);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, Constants.NUMBER_OF_COLUMN));
-        mRecyclerView.addItemDecoration(new GridItemDecoration(this));
     }
 
     @Override
