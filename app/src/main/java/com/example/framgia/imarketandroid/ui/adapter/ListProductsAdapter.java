@@ -52,7 +52,7 @@ public class ListProductsAdapter extends RecyclerView.Adapter<ListProductsAdapte
     public void onBindViewHolder(ListProductsAdapter.ViewHolder holder, int position) {
         ItemProduct itemProduct = mItems.get(position);
         String imageLink = itemProduct.getImageLists().get(1).getPhotoLink();
-        if (imageLink.isEmpty()) {
+        if (imageLink==null) {
             holder.mIvPresentIcon.setImageResource(R.drawable.ic_iphone5s);
         } else {
             Glide.with(mContext).load(imageLink).into(holder.mIvPresentIcon);
