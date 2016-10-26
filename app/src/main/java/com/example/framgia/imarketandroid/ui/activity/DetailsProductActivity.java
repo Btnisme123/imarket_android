@@ -338,9 +338,9 @@ public class DetailsProductActivity extends AppCompatActivity
     public void onBackPressed() {
         if (mIvShowPreview.isShown())
             mIvShowPreview.setVisibility(View.GONE);
-        if (mRecyclerRateMessage.isShown())
+        else if (mRecyclerRateMessage.isShown())
             mRecyclerRateMessage.setVisibility(View.GONE);
-        if (mPager.isShown())
+        else if (mPager.isShown())
             mPager.setVisibility(View.GONE);
         else
             super.onBackPressed();

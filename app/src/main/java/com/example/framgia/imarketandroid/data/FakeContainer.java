@@ -209,7 +209,19 @@ public class FakeContainer {
         }
         return idRes;
     }
-
+    public static ArrayList<ItemProduct> getListProducts() {
+        // Fake data
+        ArrayList<ItemProduct> list = new ArrayList<>();
+        list.add(new ItemProduct("Iphone 6S", "0%", R.drawable.ic_iphone6s));
+        list.add(new ItemProduct("Iphone 5S", "10%", R.drawable.ic_iphone5s));
+        list.add(new ItemProduct("HTC One", "20%", R.drawable.ic_htc_one));
+        list.add(new ItemProduct("Sky A850", "0%", R.drawable.ic_sky_a850));
+        list.add(new ItemProduct("LG Optimus", "5%", R.drawable.ic_lg_optimus));
+        list.add(new ItemProduct("Window Phone", "0%", R.drawable.ic_window_phone));
+        list.add(new ItemProduct("Blackberry", "0%", R.drawable.ic_blackberry));
+        list.add(new ItemProduct("Nokia", "15%", R.drawable.ic_nokia_n8));
+        return list;
+    }
     public static List<AlbumShop> fakeDataAlbum() {
         List<AlbumShop> list = new ArrayList<>();
         list.add(new AlbumShop(R.drawable.ic_iphone7, "Iphone 7"));

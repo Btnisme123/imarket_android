@@ -50,6 +50,8 @@ public class Constants {
     public static final String LOCATION = "Vị trí";
     public static final String STORE = "Cửa hàng";
     public static final String FLOOR = "Số tầng";
+    public static final String NAME_START = "mNameStart";
+    public static final String NAME_END = "mNameEnd";
     public static final String FIELD_TYPE = "mType";
     public static final String STATEMENT_CALL = "tel:";
     public static final String PHONE_NUMBER_DEMO = "0988652313";
