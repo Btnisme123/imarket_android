@@ -47,7 +47,6 @@ import android.widget.Toast;
 import com.example.framgia.imarketandroid.R;
 import com.example.framgia.imarketandroid.data.FakeContainer;
 import com.example.framgia.imarketandroid.data.listener.OnRecyclerItemInteractListener;
-import com.example.framgia.imarketandroid.data.model.CommerceCanter;
 import com.example.framgia.imarketandroid.data.model.CustomMarker;
 import com.example.framgia.imarketandroid.data.model.Edge;
 import com.example.framgia.imarketandroid.data.model.Graph;
@@ -60,7 +59,6 @@ import com.example.framgia.imarketandroid.ui.views.CustomMarkerView;
 import com.example.framgia.imarketandroid.util.Constants;
 import com.example.framgia.imarketandroid.util.MapUntils;
 import com.example.framgia.imarketandroid.util.algorithm.DijkstraAlgorithm;
-import com.example.framgia.imarketandroid.util.findpath.LoadDataUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -108,7 +106,7 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
     private List<StoreType> mListStore = new ArrayList<>();
     private RecyclerView mRecyclerViewStore;
     private Button mBtnDelete, mBtnGetPath, mBtnDrawPath, mBtnCurrentLocation;
-    private Button mBtnDoneLocation, mBtnCancelLocation;
+    private Button mBtnDoneLocation, mBtnCancelLocation, mBtndeleteEdge;
     private Dialog mDialog;
     private LinearLayout mLayoutFloor;
     private Switch mSwitchLocation;
@@ -147,8 +145,8 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
     private String mTextStoreName = "";
     private Animation mSlideRightIn, mSlideRightOut, mSlideLeftIn, mSlideLeftOut;
     private EditText edtDelete;
-    private ImageView mImgCompass;
-    public static float currentDegree = 0f;
+    private ImageButton mImgSavePoint;
+    public static float currentDegree = FakeContainer.CAMERA_PARAMETER;
     private SensorManager mSensorManager;
     private View mMarkerView;
     private View mInterMarkerView;
@@ -157,8 +155,7 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
     private float mBearing = FakeContainer.CAMERA_PARAMETER;
     private CustomMarkerView mIntersectionMK;
     private Marker mInteraker;
-    private float mDegree = 0;
-
+    private float mDegree=0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,9 +164,9 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
         hideStatusBar();
         initViews();
         Intent intent = getIntent();
-        CommerceCanter commerce = (CommerceCanter) intent
-            .getSerializableExtra(Constants.COMMERCE_INTENT);
-        LoadDataUtils.loadFloor(this, commerce.getId());
+//        CommerceCanter commerce = (CommerceCanter) intent
+//            .getSerializableExtra(Constants.COMMERCE_INTENT);
+//        LoadDataUtils.loadFloor(this, commerce.getId());
     }
 
     private void initMap() {
@@ -181,6 +178,8 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
         mEdges = RealmRemote.getListEdge();
         mBtnDrawPath = (Button) findViewById(R.id.btn_show_dialog);
         mBtnDrawPath.setOnClickListener(this);
+        mBtndeleteEdge = (Button) findViewById(R.id.btn_delete_edge);
+        mBtndeleteEdge.setOnClickListener(this);
         mBtnDelete = (Button) findViewById(R.id.btn_delete_data);
         mBtnDelete.setOnClickListener(this);
         mBtnGetPath = (Button) findViewById(R.id.btn_demo_find_way);
@@ -190,11 +189,10 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
     private void initViews() {
         mMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
             .inflate(R.layout.item_marker, null);
-        mInterMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+        mInterMarkerView=((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE))
             .inflate(R.layout.item_current_marker, null);
-        mIntersectionMK =
-            (CustomMarkerView) mInterMarkerView.findViewById(R.id.current_custom_marker_view);
-        mImgCompass = (ImageView) findViewById(R.id.img_compass);
+        mIntersectionMK = (CustomMarkerView) mInterMarkerView.findViewById(R.id.current_custom_marker_view);
+        mImgSavePoint = (ImageButton) findViewById(R.id.img_save_point);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         edtDelete = (EditText) findViewById(R.id.edt_delete);
         initListViewFloor();
@@ -316,7 +314,7 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         removeCamera();
-        setListMarker();
+        //setListMarker();
         //setListEdge();
         setCustomMarkers(0);
         mMap.setOnInfoWindowClickListener(this);
@@ -404,13 +402,13 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
     private void setListMarker() {
         mNodesDisplay = RealmRemote.getListPointDisplay(0);
         for (Point point : mNodesDisplay) {
-            if (point.getType() != 0) {
+          //  if (point.getType() != 0) {
                 MarkerOptions options = new MarkerOptions()
                     .position(RealmRemote.getLocationFromName(point.getId()))
                     .title(String.valueOf(point.getId()));
                 Marker marker = mMap.addMarker(options);
                 mListMarker.add(marker);
-            }
+         //   }
         }
     }
 
@@ -550,7 +548,7 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
             case FakeContainer.STORE_TYPE_0:
                 if (mCheckCurrentLocation == true) {
                     mIntersectionMK
-                        .setBackground(getResources().getDrawable(R.drawable.img_compass));
+                        .setBackground(getResources().getDrawable(R.drawable.compass));
                     LatLng newLatLng = new LatLng(marker.getLatitude(), marker.getLongitude());
                     mInteraker = mMap.addMarker(new MarkerOptions()
                         .position(newLatLng)
@@ -558,7 +556,7 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
                         .icon(BitmapDescriptorFactory
                             .fromBitmap(MapUntils.createBitmapFromView(this, mInterMarkerView)))
                         .anchor(0.5f, 0.5f));
-                    rotateMarker(mInteraker, 11160);
+//                    rotateMarker(mInteraker, 11160);
                 } else {
                     if (mInteraker != null)
                         mInteraker.remove();
@@ -630,8 +628,16 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
                 FloorActivity.sResumeValue = mFlagOne;
                 startActivity(new Intent(FloorActivity.this, DialogActivity.class));
                 break;
+            case R.id.btn_delete_edge:
+                String[] tempListPoint =
+                    edtDelete.getText().toString().split(getString(R.string.comma));
+                RealmRemote.deleteEdge(Integer.parseInt(tempListPoint[0]), Integer.parseInt
+                    (tempListPoint[1]));
+                RealmRemote.deleteEdge(Integer.parseInt(tempListPoint[1]), Integer.parseInt
+                    (tempListPoint[0]));
+                break;
             case R.id.btn_delete_data:
-                RealmRemote.deletePoint(edtDelete.getText().toString());
+                RealmRemote.deletePoint(Integer.parseInt(edtDelete.getText().toString()));
             case R.id.done_location:
                 if (edtLocation.getText().length() > 0) {
                     if (mCheckCurrentLocation == true) {
@@ -651,6 +657,7 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
                     } else
                         Toast.makeText(FloorActivity.this, R.string.warning_location,
                             Toast.LENGTH_LONG).show();
+                 //   rotateMarker(mInteraker, 360);
                 }
                 break;
         }
@@ -666,8 +673,8 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
     public void onClickItemBar(String textNameItem, int position) {
         switch (textNameItem) {
             case Constants.LOCATION:
-               // setDiaLogLocation();
-                scanQrCode();
+                setDiaLogLocation();
+                //scanQrCode();
                 break;
             case Constants.FLOOR:
                 if (mCheckSlideFloor == false) {
@@ -851,16 +858,17 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float degree = Math.round(event.values[0]) - (mAngleMap);
+        float degree = Math.round(event.values[0]) + (mAngleMap);
+
 //        RotateAnimation ra = new RotateAnimation(
-//            currentDegree, -degree,
+//            currentDegree, degree,
 //            Animation.RELATIVE_TO_SELF, 0.5f,
 //            Animation.RELATIVE_TO_SELF, 0.5f);
 //        ra.setDuration(100);
 //        ra.setFillAfter(true);
 //        mImgCompass.startAnimation(ra);
-        Thread t1 = new Thread(new MyRunable());
-        t1.run();
+//        Thread t1= new Thread(new MyRunable());
+//        t1.run();
 //        if(mCurrentlatLng!=null) {
 //            if(mInteraker!=null)
 //                mInteraker.remove();
@@ -870,52 +878,41 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
 //                    .fromBitmap(MapUntils.createBitmapFromView(this, mInterMarkerView)))
 //                .anchor(0.5f, 0.5f));
 //        }
-        currentDegree = degree;
-        if (mInteraker != null) {
-            final long start = SystemClock.uptimeMillis();
-            final float startRotation = mInteraker.getRotation();
-            final Interpolator interpolator = new LinearInterpolator();
-            final Handler handler = new Handler();
-            final long duration = 1000;
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    long elapsed = SystemClock.uptimeMillis() - start;
-                    float t = interpolator.getInterpolation((float) elapsed / duration);
-                    // float rot = t * toRotation + (1 -t) * startRotation;
-                    mInteraker.setRotation(20);
-//                if (t < 1.0) {
-//                    // Post again 16ms later.
-//                   // handler.postDelayed(this, 16);
-//                }
-                }
-            });
-        }
-    }
 
+        if(mInteraker!=null) {
+            rotateMarker(mInteraker, degree);
+        }
+        currentDegree = degree;
+    }
     public void rotateMarker(final Marker marker, final float toRotation) {
         final Handler handler = new Handler();
-        final long start = SystemClock.uptimeMillis();
-        final float startRotation = marker.getRotation();
-        final long duration = 1555;
-        final Interpolator interpolator = new LinearInterpolator();
+//        final long start = SystemClock.uptimeMillis();
+//        final float startRotation = marker.getRotation();
+//        final long duration = 1000;
+
+      //  final Interpolator interpolator = new LinearInterpolator();
+        final float[] rotation = {currentDegree};
         handler.post(new Runnable() {
             @Override
             public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float t = interpolator.getInterpolation((float) elapsed / duration);
-                float rot = t * toRotation + (1 - t) * startRotation;
-                marker.setRotation(-rot > 180 ? rot / 2 : rot);
-                if (t < 1.0) {
+//                long elapsed = SystemClock.uptimeMillis() - start;
+//                float t = interpolator.getInterpolation((float) elapsed / duration);
+//                float rot = t * toRotation + (1 -t) * startRotation;
+                rotation[0] +=0.5;
+                marker.setRotation(rotation[0]);
+               // marker.setRotation(-rot > 180 ? rot/2 : rot);
+                if (rotation[0] < toRotation) {
                     // Post again 16ms later.
-                    handler.postDelayed(this, 16);
+                    handler.postDelayed(this, 5);
                 }
             }
         });
     }
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        if(mInteraker!=null) {
+          //  rotateMarker(mInteraker, 1000);
+        }
     }
 
     @Override
@@ -952,23 +949,6 @@ public class FloorActivity extends AppCompatActivity implements AdapterView
             Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
             Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
             startActivity(marketIntent);
-        }
-    }
-
-    public void rotateImageCompass(float degree) {
-        RotateAnimation ra = new RotateAnimation(
-            currentDegree, -degree,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f);
-        ra.setDuration(100);
-        ra.setFillAfter(true);
-        mImgCompass.startAnimation(ra);
-    }
-
-    public class MyRunable implements Runnable {
-        @Override
-        public void run() {
-            rotateImageCompass(mDegree);
         }
     }
 }

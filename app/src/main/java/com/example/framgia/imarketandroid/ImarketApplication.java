@@ -31,20 +31,20 @@ public class ImarketApplication extends Application {
         super.onCreate();
         printHashKey();
         notificationCount = 0;
-//        copyBundledRealmFile(this.getResources().openRawResource(R.raw.default_data), "default1" +
-//            ".realm");
-//        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
-//            .name("default1.realm").migration(new Migration())
-//            .schemaVersion(0)
-//            .build();
-//        Realm.setDefaultConfiguration(realmConfiguration);
-
+        copyBundledRealmFile(this.getResources().openRawResource(R.raw.default_data), "default1" +
+            ".realm");
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
-            .name(Realm.DEFAULT_REALM_NAME)
+            .name("default1.realm").migration(new Migration())
             .schemaVersion(0)
-            .deleteRealmIfMigrationNeeded()
             .build();
         Realm.setDefaultConfiguration(realmConfiguration);
+//
+//        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
+//            .name(Realm.DEFAULT_REALM_NAME)
+//            .schemaVersion(0)
+//            .deleteRealmIfMigrationNeeded()
+//            .build();
+//        Realm.setDefaultConfiguration(realmConfiguration);
         //  NotificationUtil.setAlarm(this);
     }
 

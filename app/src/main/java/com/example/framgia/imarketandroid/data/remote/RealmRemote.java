@@ -108,7 +108,7 @@ public class RealmRemote {
         return mRealm.where(Category.class).count();
     }
 
-    public static void deletePoint(final String name) {
+    public static void deletePoint(final int name) {
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -118,7 +118,17 @@ public class RealmRemote {
             }
         });
     }
-
+    public static void deleteEdge(final int name_start, final int name_end) {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<Edge> results =
+                    mRealm.where(Edge.class).equalTo(Constants.NAME_START, name_start).equalTo
+                        (Constants.NAME_END, name_end).findAll();
+                results.deleteAllFromRealm();
+            }
+        });
+    }
     public static void savePoint(Point point) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(point);
