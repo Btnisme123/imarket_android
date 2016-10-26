@@ -34,7 +34,7 @@ public class ListProductsActivity extends AppCompatActivity implements SearchVie
         .OnQueryTextListener {
     private RecyclerView mRvListProducts;
     private static String NAMECATEGORY = "Apple";
-    public static RecyclerView.Adapter sAdapter;
+    public static ListProductsAdapter sAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     public static List<ItemProduct> sItemProducts = new ArrayList<>();
     private DatabaseTable mDataBase;
@@ -94,7 +94,7 @@ public class ListProductsActivity extends AppCompatActivity implements SearchVie
         } else {
             sItemProducts.clear();
         }
-        ((ListProductsAdapter) sAdapter).setItems(sItemProducts);
+        sAdapter.setItems(sItemProducts);
         sAdapter.notifyDataSetChanged();
     }
 
@@ -133,20 +133,28 @@ public class ListProductsActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        updateListProducts(query);
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        // Here is where we are going to implement our filter logic
-        if (newText.isEmpty()) {
-            ((ListProductsAdapter) sAdapter).setItems(sItemProducts);
-            sAdapter.notifyDataSetChanged();
-            return true;
-        } else
-            updateListProducts(newText);
+        List<ItemProduct> list = filter(sItemProducts, newText);
+        sAdapter.animateTo(list);
         return true;
+    }
+
+    private List<ItemProduct> filter(List<ItemProduct> itemProducts, String query) {
+        query = query.toLowerCase();
+        List<ItemProduct> filterList = new ArrayList<>();
+        int size = itemProducts.size();
+        for (int i = 0; i < size; i++) {
+            ItemProduct categoryProduct = itemProducts.get(i);
+            String categoryName = categoryProduct.getNameProduct().toLowerCase();
+            if (categoryName.contains(query)) {
+                filterList.add(categoryProduct);
+            }
+        }
+        return filterList;
     }
 
     @Override

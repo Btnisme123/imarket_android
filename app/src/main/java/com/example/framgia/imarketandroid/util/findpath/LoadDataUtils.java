@@ -22,6 +22,7 @@ import com.example.framgia.imarketandroid.util.Constants;
 import com.example.framgia.imarketandroid.util.Flog;
 import com.example.framgia.imarketandroid.util.HttpRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -147,19 +148,20 @@ public class LoadDataUtils {
 
     public static void getProductInCategory(final Context context, final int id_cate) {
         init(context);
-        mProgressDialog.show();
+        //mProgressDialog.show();
         HttpRequest.getInstance().getProduct(id_cate);
         HttpRequest.getInstance().setOnLoadDataListener(new HttpRequest.OnLoadDataListener() {
             @Override
             public void onLoadDataSuccess(Object object) {
                 ProductList productList = (ProductList) object;
-                mProgressDialog.dismiss();
+               // mProgressDialog.dismiss();
                 if (productList != null) {
-
                     ListProductsActivity.sItemProducts.clear();
                     for (int i = 0; i < productList.getItemProductList().size(); i++) {
+                        List<ItemProduct> products=new ArrayList<>();
                         ItemProduct product = productList.getItemProductList().get(i);
                         ListProductsActivity.sItemProducts.add(product);
+                        Flog.toast(mContext,""+ ListProductsActivity.sItemProducts);
                     }
                     ListProductsActivity.sAdapter.notifyDataSetChanged();
                 } else {
@@ -169,7 +171,7 @@ public class LoadDataUtils {
 
             @Override
             public void onLoadDataFailure(String message) {
-                mProgressDialog.dismiss();
+                //mProgressDialog.dismiss();
                 if (!InternetUtil.isInternetConnected(context)) {
                     Flog.toast(context, R.string.no_internet);
                     processBroadcastProduct(id_cate);

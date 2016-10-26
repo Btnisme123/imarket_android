@@ -99,15 +99,6 @@ public class RealmRemote {
         return point;
     }
 
-    public static List<Category> getListCategory() {
-        RealmResults<Category> listCategory = mRealm.where(Category.class).findAll();
-        return listCategory;
-    }
-
-    public static long getCategorySize() {
-        return mRealm.where(Category.class).count();
-    }
-
     public static void deletePoint(final int name) {
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -150,12 +141,6 @@ public class RealmRemote {
     public static void saveStore(Store store) {
         mRealm.beginTransaction();
         mRealm.copyToRealm(store);
-        mRealm.commitTransaction();
-    }
-
-    public static void saveCategory(List<Category> categoryList) {
-        mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(categoryList);
         mRealm.commitTransaction();
     }
 

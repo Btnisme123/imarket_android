@@ -50,7 +50,7 @@ public class CategoryStallFragment extends Fragment implements
 
     public void init() {
         sCategoryProducts = new ArrayList<>();
-        sCategoryStallAdapter = new CategoryStallAdapter(sCategoryProducts);
+        sCategoryStallAdapter = new CategoryStallAdapter(sCategoryProducts,getActivity());
         mRecyclerView.setAdapter(sCategoryStallAdapter);
         sCategoryStallAdapter.setOnRecyclerItemInteractListener(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -64,8 +64,6 @@ public class CategoryStallFragment extends Fragment implements
             HttpRequest.getInstance().init();
             HttpRequest.getInstance().loadCategories();
             HttpRequest.getInstance().setOnLoadDataListener(this);
-        } else {
-            sCategoryStallAdapter.addAll(RealmRemote.getListCategory());
         }
     }
 
@@ -73,7 +71,6 @@ public class CategoryStallFragment extends Fragment implements
     public void onLoadDataSuccess(Object object) {
         if (object != null) {
             sCategoryProducts = (List<Category>) object;
-            RealmRemote.saveCategory(sCategoryProducts);
             sCategoryStallAdapter.addAll(sCategoryProducts);
         }
     }

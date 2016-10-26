@@ -1,5 +1,6 @@
 package com.example.framgia.imarketandroid.ui.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.framgia.imarketandroid.R;
 import com.example.framgia.imarketandroid.data.listener.OnRecyclerItemInteractListener;
 import com.example.framgia.imarketandroid.data.model.Category;
@@ -22,9 +24,11 @@ public class CategoryStallAdapter
         extends RecyclerView.Adapter<CategoryStallAdapter.CategoryHolder> {
     private List<Category> mCategoryProducts;
     private OnRecyclerItemInteractListener mListener;
+    Context mContext;
 
-    public CategoryStallAdapter(List<Category> mCategoryProducts) {
+    public CategoryStallAdapter(List<Category> mCategoryProducts, Context context) {
         this.mCategoryProducts = new ArrayList<>(mCategoryProducts);
+        this.mContext = context;
     }
 
     public void setOnRecyclerItemInteractListener(OnRecyclerItemInteractListener listener) {
@@ -42,7 +46,7 @@ public class CategoryStallAdapter
     public void onBindViewHolder(CategoryHolder holder, final int position) {
         Category categoryProduct = mCategoryProducts.get(position);
         holder.textView.setText(categoryProduct.getName());
-        holder.imageView.setImageResource(R.drawable.logo_big_c);
+        Glide.with(mContext).load(categoryProduct.getImageLink()).into(holder.imageView);
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

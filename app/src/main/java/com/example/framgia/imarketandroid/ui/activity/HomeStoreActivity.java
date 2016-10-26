@@ -95,20 +95,8 @@ public class HomeStoreActivity extends AppCompatActivity implements SearchView
             viewPager.setAdapter(mPagerAdapter);
         } else {
             Flog.toast(this, R.string.no_internet);
-            if (RealmRemote.getCategorySize() > 0) {
-                mIsCached = true;
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(Constants.CACHED_KEY, mIsCached);
-                CategoryStallFragment categoryStallFragment = new CategoryStallFragment();
-                categoryStallFragment.setArguments(bundle);
-                mPagerAdapter.addFragment(categoryStallFragment,
-                        getString(R.string.title_fragment_Category));
-                mIsCached = false;
-            } else {
-                long size = RealmRemote.getCategorySize();
                 mPagerAdapter.addFragment(new NoConnectFragment(HomeStoreActivity.this),
                         getString(R.string.title_fragment_Category));
-            }
             mPagerAdapter.addFragment(new NoConnectFragment(HomeStoreActivity.this),
                     getString(R.string.title_fragment_saleoffevent));
             mPagerAdapter.addFragment(new NoConnectFragment(HomeStoreActivity.this),

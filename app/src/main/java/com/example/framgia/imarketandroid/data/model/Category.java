@@ -4,19 +4,20 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by yue on 22/07/2016.
  */
-public class Category extends RealmObject implements Serializable{
+public class Category implements Serializable {
 
     @PrimaryKey
     @SerializedName("id")
     private String mId;
     @SerializedName("name")
     private String mName;
+    @SerializedName("image")
+    private String mImageLink;
     @SerializedName("store_id")
     private int mStoreId;
 
@@ -51,5 +52,13 @@ public class Category extends RealmObject implements Serializable{
 
     public void setStoreId(int storeId) {
         mStoreId = storeId;
+    }
+
+    public String getImageLink() {
+        return mImageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.mImageLink = imageLink;
     }
 }
