@@ -42,9 +42,11 @@ public class CategoryStallFragment extends Fragment implements
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        findView();
-        init();
+        if(savedInstanceState==null){
+            super.onViewCreated(view, savedInstanceState);
+            findView();
+            init();
+        }
     }
 
     public void findView() {

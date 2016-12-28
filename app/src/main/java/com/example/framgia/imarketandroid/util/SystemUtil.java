@@ -81,6 +81,8 @@ public class SystemUtil {
                     lineEndIndex = tv.getLayout().getLineEnd(tv.getLayout().getLineCount() - 1);
                 StringBuilder text = new StringBuilder();
                 String threeDots = context.getString(R.string.three_dots);
+                if ((viewMore && lineEndIndex - threeDots.length() <= 0) || (!viewMore && lineEndIndex <= 0))
+                    return;
                 if (viewMore)
                     text.append(tv.getText().subSequence(0,
                             lineEndIndex - threeDots.length()).toString() + threeDots);
